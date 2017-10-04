@@ -96,9 +96,11 @@ open class BaseMessagePresenter<BubbleViewT, ViewModelBuilderT, InteractionHandl
     public var decorationAttributes: ChatItemDecorationAttributes!
     open func configureCell(_ cell: CellT, decorationAttributes: ChatItemDecorationAttributes, animated: Bool, additionalConfiguration: (() -> Void)?) {
         cell.performBatchUpdates({ () -> Void in
-            self.messageViewModel.showsTail = decorationAttributes.showsTail
-            cell.avatarView.isHidden = !decorationAttributes.canShowAvatar
-            cell.bubbleView.isUserInteractionEnabled = true // just in case something went wrong while showing UIMenuController
+            self.messageViewModel.showsTail = decorationAttributes.canShowTail
+            self.messageViewModel.showsAvatar = decorationAttributes.canShowAvatar
+            self.messageViewModel.canShowFailedIcon = decorationAttributes.canShowFailedIcon
+            // just in case something went wrong while showing UIMenuController
+            self.messageViewModel.isUserInteractionEnabled = true
             cell.baseStyle = self.cellStyle
             cell.messageViewModel = self.messageViewModel
             cell.onBubbleTapped = { [weak self] (cell) in

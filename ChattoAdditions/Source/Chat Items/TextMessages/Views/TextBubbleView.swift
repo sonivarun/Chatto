@@ -160,7 +160,7 @@ public final class TextBubbleView: UIView, MaximumLayoutWidthSpecificable, Backg
             self.textView.textColor = textColor
             self.textView.linkTextAttributes = [
                 NSForegroundColorAttributeName: textColor,
-                NSUnderlineStyleAttributeName : NSUnderlineStyle.styleSingle.rawValue
+                NSUnderlineStyleAttributeName: NSUnderlineStyle.styleSingle.rawValue
             ]
             needsToUpdateText = true
         }
@@ -288,9 +288,15 @@ private final class ChatMessageTextView: UITextView {
         return false
     }
 
-    override func addGestureRecognizer(_ gestureRecognizer: UIGestureRecognizer) {
-        if type(of: gestureRecognizer) == UILongPressGestureRecognizer.self && gestureRecognizer.delaysTouchesEnded {
-            super.addGestureRecognizer(gestureRecognizer)
+    // See https://github.com/badoo/Chatto/issues/363
+    override var gestureRecognizers: [UIGestureRecognizer]? {
+        set {
+            super.gestureRecognizers = newValue
+        }
+        get {
+            return super.gestureRecognizers?.filter({ (gestureRecognizer) -> Bool in
+                return type(of: gestureRecognizer) == UILongPressGestureRecognizer.self && gestureRecognizer.delaysTouchesEnded
+            })
         }
     }
 
